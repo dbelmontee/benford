@@ -26,8 +26,6 @@ casos = casos[filtro]
 filtro = casos['benford_mortes'] != '0'
 casos = casos[filtro]
 
-casos
-
 """# Detalhando a base"""
 
 casos_confirmados_series = casos['benford_casos_confirmados'].value_counts()
@@ -35,40 +33,29 @@ casos_confirmados = pd.DataFrame(casos_confirmados_series)
 casos_confirmados = casos_confirmados.rename(columns={'benford_casos_confirmados':'casos_confirmados'})
 soma_casos_confirmados = casos_confirmados.casos_confirmados.sum()
 casos_confirmados['porcentagem_casos_confirmados'] = casos_confirmados.casos_confirmados.map(lambda x : x/soma_casos_confirmados)
-casos_confirmados
 
 mortes_series = casos['benford_mortes'].value_counts()
 mortes = pd.DataFrame(mortes_series)
 mortes = mortes.rename(columns={'benford_mortes':'mortes'})
 soma_mortes = mortes.mortes.sum()
 mortes['porcentagem_mortes'] = mortes.mortes.map(lambda x : x/soma_mortes)
-mortes
 
 """# Montando dataframe de base"""
 
 benford_base = pd.DataFrame({'benford': ['1', '2', '3', '4', '5', '6', '7', '8', '9'],
                              'porcentagem_benford': [0.301, 0.176, 0.125, 0.096, 0.079, 0.067, 0.058, 0.051, 0.046], 
                              'porcentagem_casos_confirmados': casos_confirmados.porcentagem_casos_confirmados,
-                             'porcentagem_mortes': mortes.porcentagem_mortes
-                             })
-benford_base
+                             'porcentagem_mortes': mortes.porcentagem_mortes})
 
 """# Apresentando graficamente"""
 
 import seaborn as sns
-sns.set_theme(style="whitegrid")
+sns.set_theme(context='notebook', style='whitegrid', palette='deep', font='sans-serif', font_scale=1, color_codes=True, rc=None)
 
 casos = casos.sort_values('benford_casos_confirmados')
 sns.histplot(data=casos, x='benford_casos_confirmados', stat='probability')
 
-sns.set_theme(context='notebook', style='whitegrid', palette='deep', font='sans-serif', font_scale=1, color_codes=True, rc=None)
-
 casos = casos.sort_values('benford_mortes')
 sns.histplot(data=casos, x='benford_mortes', stat='probability')
-
-import numpy as np
-import pandas as pd
-import seaborn as sns
-sns.set_theme(context='notebook', style='whitegrid', palette='deep', font='sans-serif', font_scale=1, color_codes=True, rc=None)
 
 sns.lineplot(data=benford_base, palette="tab10", linewidth=3)
